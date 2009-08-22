@@ -17,13 +17,16 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
-our @EXPORT  = qw( nextuploadserver getapicpu checkincomplete renamefile );
+our @EXPORT  = qw( nextuploadserver getapicpu checkincomplete renamefile
+  credentials storedcredentials movefilestorealfolder );
 
 my $api_url = 'http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=';
 
 my $ua = LWP::UserAgent->new();
 $ua->env_proxy();
 $ua->agent('WWW::Rapidshare::API');
+
+my ( $username, $password, $cookie );
 
 =head1 SYNOPSIS
 
@@ -62,8 +65,7 @@ sub checkincomplete {
 Incorrect parametres.
 Correct usage: checkincomplete( { fileid => \\d+, killcode => \\d+ } )
 USAGE
-    croak $error
-      if ref( $_[0] ) ne 'HASH';
+    croak $error if ref( $_[0] ) ne 'HASH';
     my %parametres = %{ $_[0] };
     if ( !defined $parametres{fileid} || !defined $parametres{killcode} ) {
         croak $error;
@@ -80,8 +82,7 @@ sub renamefile {
 Incorrect parametres.
 Correct usage: checkincomplete( { fileid => \\d+, killcode => \\d+ } )
 USAGE
-    croak $error
-      if ref( $_[0] ) ne 'HASH';
+    croak $error if ref( $_[0] ) ne 'HASH';
     my %parametres = %{ $_[0] };
     if (   !defined $parametres{fileid}
         || !defined $parametres{killcode}
@@ -94,6 +95,44 @@ USAGE
 "${api_url}renamefile_v1&fileid=${parametres{fileid}}&killcode=${parametres{killcode}}&newname=${parametres{newname}}"
     );
     return $response->content();
+}
+
+sub credentials {
+    my $error = <<USAGE;
+Incorrect parametres.
+Correct usage: credentials( { username => \\w+, password => \\w+, cookie => \\w+ } )
+USAGE
+    croak $error if ref( $_[0] ) ne 'HASH';
+    my %parametres = %{ $_[0] };
+    if (   !( defined $parametres{username} && defined $parametres{password} )
+        || !defined $parametres{cookie} )
+    {
+        croak $error;
+    }
+
+    if ( defined $parametres{username} && defined $parametres{password} ) {
+        $username = $parametres{username};
+        $password = $parametres{password};
+    }
+    elsif ( defined $parametres{cookie} ) {
+        $cookie = $parametres{cookie};
+    }
+}
+
+sub storedcredentials {
+    if ( defined $username && defined $password ) {
+        return (
+            username => $username,
+            password => $password,
+        );
+    }
+    elsif ( defined $cookie ) {
+        return ( cookie => $cookie );
+    }
+    return 0;
+}
+
+sub movefilestorealfolder {
 }
 
 =head1 AUTHOR
