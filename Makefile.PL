@@ -6,6 +6,7 @@ author   q{Alan Haggai Alavi <alanhaggai@alanhaggai.org>};
 license  'perl';
 
 build_requires 'Test::More';
+build_requires 'Test::Exception';
 requires 'LWP::UserAgent';
 
 auto_install;

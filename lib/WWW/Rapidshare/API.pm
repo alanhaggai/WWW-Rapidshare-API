@@ -4,6 +4,7 @@ use warnings;
 use strict;
 use base 'Exporter';
 use LWP::UserAgent;
+use Carp;
 
 =head1 NAME
 
@@ -16,7 +17,7 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
-our @EXPORT  = qw( nextuploadserver getapicpu );
+our @EXPORT  = qw( nextuploadserver getapicpu checkincomplete );
 
 my $api_url = 'http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=';
 
@@ -54,6 +55,22 @@ sub getapicpu {
     my ( $current_points, $points_before_getting_blocked ) = split /,/,
       $response->content();
     return ( $current_points, $points_before_getting_blocked );
+}
+
+sub checkincomplete {
+    my $error =
+"Incorrect parametres.\nCorrect usage: checkincomplete( { fileid => \\d+, killcode => \\d+ } )";
+    croak $error
+      if ref( $_[0] ) ne 'HASH';
+    my %parametres = %{ $_[0] };
+    if ( !exists $parametres{fileid} || !exists $parametres{killcode} ) {
+        croak $error;
+    }
+
+    my $response = $ua->get(
+"${api_url}checkincomplete_v1&fileid=${parametres{fileid}}&killcode=${parametres{killcode}}"
+    );
+    return $response->content();
 }
 
 =head1 AUTHOR
