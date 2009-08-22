@@ -45,9 +45,9 @@ Perhaps a little code snippet.
 
 sub nextuploadserver {
     my $response = $ua->get( $api_url . 'nextuploadserver_v1' );
-    $response->content();
+    my $server   = $response->content();
+    return "rs$server.rapidshare.com";
 }
-
 
 =head1 AUTHOR
 
