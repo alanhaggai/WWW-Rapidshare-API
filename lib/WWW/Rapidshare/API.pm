@@ -16,7 +16,7 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
-our @EXPORT  = qw(nextuploadserver);
+our @EXPORT  = qw( nextuploadserver getapicpu );
 
 my $api_url = 'http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=';
 
@@ -47,6 +47,13 @@ sub nextuploadserver {
     my $response = $ua->get( $api_url . 'nextuploadserver_v1' );
     my $server   = $response->content();
     return "rs$server.rapidshare.com";
+}
+
+sub getapicpu {
+    my $response = $ua->get( $api_url . 'getapicpu_v1' );
+    my ( $current_points, $points_before_getting_blocked ) = split /,/,
+      $response->content();
+    return ( $current_points, $points_before_getting_blocked );
 }
 
 =head1 AUTHOR
