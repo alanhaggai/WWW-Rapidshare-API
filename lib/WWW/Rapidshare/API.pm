@@ -26,7 +26,7 @@ my $ua = LWP::UserAgent->new();
 $ua->env_proxy();
 $ua->agent('WWW::Rapidshare::API');
 
-my ( $username, $password, $cookie );
+my ( $login, $password, $cookie );
 
 =head1 SYNOPSIS
 
@@ -115,7 +115,7 @@ Incorrect parametres.
 Correct usage:
     credentials(
         {
-            username => \\w+,
+            login    => \\w+,
             password => \\w+,
             cookie   => \\w+
         }
@@ -123,14 +123,14 @@ Correct usage:
 USAGE
     croak $error if ref( $_[0] ) ne 'HASH';
     my %parametres = %{ $_[0] };
-    if (   !( defined $parametres{username} && defined $parametres{password} )
+    if (   !( defined $parametres{login} && defined $parametres{password} )
         || !defined $parametres{cookie} )
     {
         croak $error;
     }
 
-    if ( defined $parametres{username} && defined $parametres{password} ) {
-        $username = $parametres{username};
+    if ( defined $parametres{login} && defined $parametres{password} ) {
+        $login    = $parametres{login};
         $password = $parametres{password};
     }
     elsif ( defined $parametres{cookie} ) {
@@ -139,9 +139,9 @@ USAGE
 }
 
 sub storedcredentials {
-    if ( defined $username && defined $password ) {
+    if ( defined $login && defined $password ) {
         return (
-            username => $username,
+            login => $login,
             password => $password,
         );
     }
