@@ -58,8 +58,10 @@ sub getapicpu {
 }
 
 sub checkincomplete {
-    my $error =
-"Incorrect parametres.\nCorrect usage: checkincomplete( { fileid => \\d+, killcode => \\d+ } )";
+    my $error = <<USAGE;
+Incorrect parametres.
+Correct usage: checkincomplete( { fileid => \\d+, killcode => \\d+ } )
+USAGE
     croak $error
       if ref( $_[0] ) ne 'HASH';
     my %parametres = %{ $_[0] };
@@ -74,8 +76,10 @@ sub checkincomplete {
 }
 
 sub renamefile {
-    my $error =
-"Incorrect parametres.\nCorrect usage: renamefile( { fileid => \\d+, killcode => \\d+, newname => \\w+ } )";
+    my $error = <<USAGE;
+Incorrect parametres.
+Correct usage: checkincomplete( { fileid => \\d+, killcode => \\d+ } )
+USAGE
     croak $error
       if ref( $_[0] ) ne 'HASH';
     my %parametres = %{ $_[0] };
