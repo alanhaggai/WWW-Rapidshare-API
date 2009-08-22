@@ -17,7 +17,7 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
-our @EXPORT  = qw( nextuploadserver getapicpu checkincomplete );
+our @EXPORT  = qw( nextuploadserver getapicpu checkincomplete renamefile );
 
 my $api_url = 'http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=';
 
@@ -63,12 +63,31 @@ sub checkincomplete {
     croak $error
       if ref( $_[0] ) ne 'HASH';
     my %parametres = %{ $_[0] };
-    if ( !exists $parametres{fileid} || !exists $parametres{killcode} ) {
+    if ( !defined $parametres{fileid} || !defined $parametres{killcode} ) {
         croak $error;
     }
 
     my $response = $ua->get(
 "${api_url}checkincomplete_v1&fileid=${parametres{fileid}}&killcode=${parametres{killcode}}"
+    );
+    return $response->content();
+}
+
+sub renamefile {
+    my $error =
+"Incorrect parametres.\nCorrect usage: renamefile( { fileid => \\d+, killcode => \\d+, newname => \\w+ } )";
+    croak $error
+      if ref( $_[0] ) ne 'HASH';
+    my %parametres = %{ $_[0] };
+    if (   !defined $parametres{fileid}
+        || !defined $parametres{killcode}
+        || !defined $parametres{newname} )
+    {
+        croak $error;
+    }
+
+    my $response = $ua->get(
+"${api_url}renamefile_v1&fileid=${parametres{fileid}}&killcode=${parametres{killcode}}&newname=${parametres{newname}}"
     );
     return $response->content();
 }
